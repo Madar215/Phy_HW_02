@@ -14,7 +14,7 @@ public class CarController : MonoBehaviour {
     [SerializeField] private Rigidbody rearWheelRight;
     [SerializeField] private Rigidbody rearWheelLeft;
     
-    private float _moveX;
+    private float _move;
 
     private void OnEnable() {
         inputReader.Drive += OnDrive;
@@ -25,10 +25,10 @@ public class CarController : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        rb.AddForce(new Vector3(_moveX, 0f, 0f) * (moveSpeed * Time.fixedDeltaTime), ForceMode.VelocityChange);
+        rb.AddForce(new Vector3(_move, 0f, 0f) * (moveSpeed * Time.fixedDeltaTime), ForceMode.VelocityChange);
     }
 
     private void OnDrive(InputAction.CallbackContext context) {
-        _moveX = context.ReadValue<float>();
+        _move = context.ReadValue<float>();
     }
 }
