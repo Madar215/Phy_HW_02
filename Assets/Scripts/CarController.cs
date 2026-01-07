@@ -7,27 +7,28 @@ public class CarController : MonoBehaviour {
 
     [Header("Forces")] 
     [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float wheelSpinTorque = 20f;
 
-    private Vector2 _move;
+    [SerializeField] private Rigidbody frontWheelRight;
+    [SerializeField] private Rigidbody frontWheelLeft;
+    [SerializeField] private Rigidbody rearWheelRight;
+    [SerializeField] private Rigidbody rearWheelLeft;
+    
     private float _moveX;
-    private float _moveY;
 
     private void OnEnable() {
-        inputReader.Move += OnMove;
+        inputReader.Drive += OnDrive;
     }
 
     private void OnDisable() {
-        inputReader.Move -= OnMove;
+        inputReader.Drive -= OnDrive;
     }
 
     private void FixedUpdate() {
-        var movement = new Vector3(_moveX, 0f, _moveY) * (moveSpeed * Time.fixedDeltaTime);
-        rb.MovePosition(rb.position + movement);
+        rb.AddForce(new Vector3(_moveX, 0f, 0f) * (moveSpeed * Time.fixedDeltaTime), ForceMode.VelocityChange);
     }
 
-    private void OnMove(InputAction.CallbackContext context) {
-        _move = context.ReadValue<Vector2>();
-        _moveX = _move.x;
-        _moveY = _move.y;
+    private void OnDrive(InputAction.CallbackContext context) {
+        _moveX = context.ReadValue<float>();
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
 public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions {
     // Events
-    public event UnityAction<InputAction.CallbackContext> Move = delegate { };
+    public event UnityAction<InputAction.CallbackContext> Drive = delegate { };
+    public event UnityAction<InputAction.CallbackContext> Steer = delegate { };
     
     private PlayerInputActions _inputActions;
     
@@ -22,39 +23,12 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions {
         _inputActions.Player.Disable();
     }
 
-    public void OnMove(InputAction.CallbackContext context) {
-        Move?.Invoke(context);
+    public void OnDrive(InputAction.CallbackContext context) {
+        Drive?.Invoke(context);
     }
 
-    public void OnLook(InputAction.CallbackContext context) {
-        
+    public void OnSteer(InputAction.CallbackContext context) {
+        Steer?.Invoke(context);
     }
 
-    public void OnAttack(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnInteract(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnCrouch(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnJump(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnPrevious(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnNext(InputAction.CallbackContext context) {
-        
-    }
-
-    public void OnSprint(InputAction.CallbackContext context) {
-        
-    }
 }
