@@ -2,17 +2,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour {
+    [Header("Refs")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Rigidbody rb;
 
     [Header("Forces")] 
     [SerializeField] private float moveSpeed = 10f;
-    [SerializeField] private float wheelSpinTorque = 20f;
-
-    [SerializeField] private Rigidbody frontWheelRight;
-    [SerializeField] private Rigidbody frontWheelLeft;
-    [SerializeField] private Rigidbody rearWheelRight;
-    [SerializeField] private Rigidbody rearWheelLeft;
     
     private float _move;
 
@@ -25,7 +20,9 @@ public class CarController : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        rb.AddForce(new Vector3(_move, 0f, 0f) * (moveSpeed * Time.fixedDeltaTime), ForceMode.VelocityChange);
+        // Calculate the forward direction force and apply it to the car
+        var targetDir = transform.right * (_move * moveSpeed * Time.fixedDeltaTime);
+        rb.AddForce(targetDir, ForceMode.VelocityChange);
     }
 
     private void OnDrive(InputAction.CallbackContext context) {
