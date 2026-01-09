@@ -201,7 +201,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4429850}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -461,7 +461,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 321753908}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3180,7 +3180,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1062860104}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3249,7 +3249,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1064874002}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 21f4e823f5ae40342a68048981724b86, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3961,7 +3961,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275932767}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4930,7 +4930,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620672529}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5636,7 +5636,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863891067}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8c500e745683e444fb9f34ed818ef2f1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
