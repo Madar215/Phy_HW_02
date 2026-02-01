@@ -238,7 +238,7 @@ public class BowAndArrowController : MonoBehaviour
     /// Simulate trajectory until ground; returns impact speed (m/s) and impact position at exact ground crossing (interpolated). Returns false if never hits ground.
     /// Uses same step as flight so prediction matches actual impact.
     /// </summary>
-    bool GetPredictedImpact(out Vector3 impactPos, out float impactSpeed)
+    public bool GetPredictedImpact(out Vector3 impactPos, out float impactSpeed)
     {
         impactPos = Vector3.zero;
         impactSpeed = 0f;
