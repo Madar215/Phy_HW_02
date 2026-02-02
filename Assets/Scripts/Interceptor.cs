@@ -1,38 +1,54 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Interceptor : MonoBehaviour {
-    [Header("Refs")]
-    [SerializeField] private BowAndArrowController bowAndArrowController;
-    [SerializeField] private TargetObject targetObj;
+    [Header("Forces")] 
+    [SerializeField] private float speed = 10f;
 
-    private Vector3 _localHalf;
+    private Vector3 _velocity;
+    private Vector3 _gravity;
+    private float _drag;
+
+    private bool _isActive;
+    private Transform _target;
+    
+    public void Init(Transform target, Vector3 gravity, float drag) {
+        // Activate
+        _isActive = true;
+        
+        // Set the target's transform to intercept
+        _target = target;
+        
+        // Set velocity
+        Vector3 dir = (_target.position - transform.position).normalized;
+        _velocity = dir * speed;
+        
+        // Set gravity and drag
+        _gravity = gravity;
+        _drag = drag;
+    }
 
     private void Update() {
-        if (bowAndArrowController.GetPredictedImpact(out Vector3 impactPos, out float impactSpeed)) {
-            if (CheckIfHitTarget(impactPos)) {
-                // TODO: Implement interception method
-                Debug.Log("Hit target");
-            }
+        if(!_isActive) return;
+        
+        float dt = Time.deltaTime;
+        
+        ApplyDrag(ref _velocity, _drag, dt);
+        // Calculate velocity and apply to position
+        Vector3 dir = (_target.position - transform.position).normalized;
+        _velocity = dir * speed;
+        _velocity +=  _gravity * dt;
+        transform.position += _velocity * dt;
+
+        // “Kill” when we reach the planned intercept time (or close enough)
+        if (Vector3.Distance(transform.position, _target.position) < 0.25f) {
+            Debug.Log("[Interceptor] Intercept executed.");
         }
     }
 
-    private bool CheckIfHitTarget(Vector3 impactPos) {
-        // Get the target Transform
-        Transform targetObjTransform = targetObj.transform;
-        // Invert the impact pos to local space
-        Vector3 localPoint = targetObjTransform.InverseTransformPoint(impactPos);
-        // Get the target's half size
-        Vector3 worldHalf = new Vector3(targetObj.sizeX, targetObj.sizeY, targetObj.sizeZ) * 0.5f;
-        // Get the target lossy scale
-        Vector3 targetLossyScale = targetObjTransform.lossyScale;
-        _localHalf = new Vector3(
-            worldHalf.x / Mathf.Abs(targetLossyScale.x),
-            worldHalf.y / Mathf.Abs(targetLossyScale.y),
-            worldHalf.z / Mathf.Abs(targetLossyScale.z)
-        );
-        // Check if the impact pos is inside the target "collider"
-        return Mathf.Abs(localPoint.x) <= _localHalf.x &&
-               Mathf.Abs(localPoint.y) <= _localHalf.y &&
-               Mathf.Abs(localPoint.z) <= _localHalf.z;
+    private static void ApplyDrag(ref Vector3 v, float drag, float dt) {
+        if (drag <= 0f) return;
+        
+        float scale = Mathf.Clamp01(1f - drag * dt);
+        v *= scale;
     }
 }
