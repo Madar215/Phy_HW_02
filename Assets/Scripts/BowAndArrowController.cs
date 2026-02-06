@@ -71,9 +71,10 @@ public class BowAndArrowController : MonoBehaviour
     [Range(0.05f, 1f)]
     public float timeScaleDuringFlight = 0.5f;
 
-    bool isFlying;
+    public bool IsFlying { get; private set; }
     bool arrowStuck;
     Vector3 arrowVelocity;
+    public Vector3 CurrentVelocity => arrowVelocity;
     Quaternion bowBaseRotation;
     Vector3 currentNockPosition;
     bool lmbHeldPreviousFrame;
@@ -89,7 +90,7 @@ public class BowAndArrowController : MonoBehaviour
         if (bow == null) bow = transform;
         bowBaseRotation = bow != null ? bow.rotation : Quaternion.identity;
         if (trajectoryLine != null) trajectoryLine.positionCount = 0;
-        isFlying = false;
+        IsFlying = false;
         arrowStuck = false;
         if (stringLeft != null && stringRight != null)
             currentNockPosition = (stringLeft.position + stringRight.position) * 0.5f;
@@ -109,7 +110,7 @@ public class BowAndArrowController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.N))
             arrowStuck = false;
 
-        if (isFlying)
+        if (IsFlying)
         {
             UpdateArrowFlight(Time.deltaTime);
             if (trajectoryLine != null) trajectoryLine.positionCount = 0;
@@ -198,7 +199,7 @@ public class BowAndArrowController : MonoBehaviour
     }
 
     /// <summary>Step used for trajectory line and predicted impact. When demo is ON, uses fixed larger step so prediction lands short (for teaching).</summary>
-    float GetTrajectoryStep()
+    public float GetTrajectoryStep()
     {
         if (useFixedStepForTrajectoryDemo)
             return Mathf.Clamp(trajectoryFixedStepForDemo, 0.01f, 0.1f);
@@ -218,7 +219,7 @@ public class BowAndArrowController : MonoBehaviour
             trajectoryLine.SetPosition(i, points[i]);
     }
 
-    List<Vector3> ComputeTrajectory(Vector3 startPos, Vector3 startVel, int maxPoints, float dt)
+    public List<Vector3> ComputeTrajectory(Vector3 startPos, Vector3 startVel, int maxPoints, float dt)
     {
         var points = new List<Vector3> { startPos };
         Vector3 p = startPos;
@@ -238,7 +239,7 @@ public class BowAndArrowController : MonoBehaviour
     /// Simulate trajectory until ground; returns impact speed (m/s) and impact position at exact ground crossing (interpolated). Returns false if never hits ground.
     /// Uses same step as flight so prediction matches actual impact.
     /// </summary>
-    bool GetPredictedImpact(out Vector3 impactPos, out float impactSpeed)
+    public bool GetPredictedImpact(out Vector3 impactPos, out float impactSpeed)
     {
         impactPos = Vector3.zero;
         impactSpeed = 0f;
@@ -270,10 +271,10 @@ public class BowAndArrowController : MonoBehaviour
 
     void ReleaseArrow()
     {
-        if (arrow == null || isFlying) return;
+        if (arrow == null || IsFlying) return;
 
         arrowVelocity = GetLaunchVelocity();
-        isFlying = true;
+        IsFlying = true;
         drawPower = 0f;
         Time.timeScale = timeScaleDuringFlight;
     }
@@ -351,7 +352,7 @@ public class BowAndArrowController : MonoBehaviour
         float momentumMag = momentum.magnitude;
         Debug.Log($"[Arrow] Ground impact. velocity = ({impactVelocity.x:F2}, {impactVelocity.y:F2}, {impactVelocity.z:F2}) m/s, |v| = {speed:F2} m/s, KE = {ke:F2} J, |p| = {momentumMag:F2} kg·m/s (mass = {arrowMass} kg)");
         Time.timeScale = 1f;
-        isFlying = false;
+        IsFlying = false;
         arrowStuck = true;
         arrowVelocity = Vector3.zero;
     }
@@ -365,7 +366,7 @@ public class BowAndArrowController : MonoBehaviour
         style.normal.textColor = Color.yellow;
         style.fontStyle = FontStyle.Bold;
 
-        if (isFlying && arrow != null)
+        if (IsFlying && arrow != null)
         {
             int lineCount = 5;
             float boxH = lineCount * lineH + 8f;
@@ -409,7 +410,7 @@ public class BowAndArrowController : MonoBehaviour
         return (-GetBowForward()).normalized;
     }
 
-    Vector3 GetLaunchVelocity()
+    public Vector3 GetLaunchVelocity()
     {
         float mass = Mathf.Max(arrowMass, 0.001f);
         float ke = drawPower * launchEnergyAtFullDraw;
@@ -417,7 +418,7 @@ public class BowAndArrowController : MonoBehaviour
         return GetLaunchDirection().normalized * speed;
     }
 
-    Vector3 GetNockPosition()
+    public Vector3 GetNockPosition()
     {
         Vector3 left = stringLeft != null ? stringLeft.position : bow.position;
         Vector3 right = stringRight != null ? stringRight.position : bow.position;
