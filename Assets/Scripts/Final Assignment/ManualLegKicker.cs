@@ -88,7 +88,7 @@ namespace Final_Assignment {
 
             float sideFactor = Mathf.Clamp(Vector3.Dot(toBall.normalized, side), -1f, 1f);
 
-            float baseImpulse = (mode == KickMode.GroundPass) ? passImpulse : lobImpulse;
+            float baseImpulse = mode == KickMode.GroundPass ? passImpulse : lobImpulse;
 
             // Airborne gets slightly stronger impulse to reward timing
             float timingBoost = ball.grounded ? 1f : 1.15f;
