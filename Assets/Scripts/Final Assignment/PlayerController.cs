@@ -2,8 +2,7 @@
 using UnityEngine.InputSystem;
 
 namespace Final_Assignment {
-    public class PlayerController : MonoBehaviour
-    {
+    public class PlayerController : MonoBehaviour {
         [Header("References")]
         [SerializeField] private InputReader input;
 
@@ -15,6 +14,8 @@ namespace Final_Assignment {
 
         private Vector3 _velocity;
         private Vector2 _moveInput;
+        
+        public Vector3 Velocity => _velocity;
 
         private void OnEnable() {
             input.Move += OnMove;

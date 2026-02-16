@@ -708,6 +708,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""KickPass"",
+                    ""type"": ""Button"",
+                    ""id"": ""7648dc18-c773-43b8-8343-17a96a5cff98"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""KickLob"",
+                    ""type"": ""Button"",
+                    ""id"": ""d1277f31-76cb-45dc-9272-5fbd341d9019"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -842,6 +860,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a74173df-2818-456c-85fd-5bdcbc2201d0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""KickPass"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""913df17e-5c8d-436b-8ebe-0e7775ab7a4c"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""KickLob"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -928,6 +968,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_KickPass = m_Player.FindAction("KickPass", throwIfNotFound: true);
+        m_Player_KickLob = m_Player.FindAction("KickLob", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -1313,6 +1355,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_KickPass;
+    private readonly InputAction m_Player_KickLob;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1328,6 +1372,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Move".
         /// </summary>
         public InputAction @Move => m_Wrapper.m_Player_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/KickPass".
+        /// </summary>
+        public InputAction @KickPass => m_Wrapper.m_Player_KickPass;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/KickLob".
+        /// </summary>
+        public InputAction @KickLob => m_Wrapper.m_Player_KickLob;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1357,6 +1409,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @KickPass.started += instance.OnKickPass;
+            @KickPass.performed += instance.OnKickPass;
+            @KickPass.canceled += instance.OnKickPass;
+            @KickLob.started += instance.OnKickLob;
+            @KickLob.performed += instance.OnKickLob;
+            @KickLob.canceled += instance.OnKickLob;
         }
 
         /// <summary>
@@ -1371,6 +1429,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @KickPass.started -= instance.OnKickPass;
+            @KickPass.performed -= instance.OnKickPass;
+            @KickPass.canceled -= instance.OnKickPass;
+            @KickLob.started -= instance.OnKickLob;
+            @KickLob.performed -= instance.OnKickLob;
+            @KickLob.canceled -= instance.OnKickLob;
         }
 
         /// <summary>
@@ -1583,5 +1647,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "KickPass" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnKickPass(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "KickLob" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnKickLob(InputAction.CallbackContext context);
     }
 }

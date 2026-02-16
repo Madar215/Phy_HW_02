@@ -7,6 +7,8 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
     // Car events
     public event UnityAction<InputAction.CallbackContext> Drive = delegate { };
     public event UnityAction<InputAction.CallbackContext> Steer = delegate { };
+    public event UnityAction KickPass = delegate { };
+    public event UnityAction KickLob = delegate { };
     
     // Player events
     public event UnityAction<InputAction.CallbackContext> Move = delegate { };
@@ -38,5 +40,15 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
 
     public void OnMove(InputAction.CallbackContext context) {
         Move?.Invoke(context);
+    }
+
+    public void OnKickPass(InputAction.CallbackContext c) {
+        if (!c.started) return;
+        KickPass?.Invoke();
+    }
+
+    public void OnKickLob(InputAction.CallbackContext c) {
+        if (!c.started) return;
+        KickLob?.Invoke();
     }
 }
