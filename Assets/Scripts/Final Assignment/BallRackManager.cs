@@ -1,8 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Final_Assignment {
     public class BallRackManager : MonoBehaviour {
+        // Events
+        public event UnityAction<int> OnGoal;
+        public event UnityAction<int> OnBallUsed;
+        
         [Header("Refs")]
         [SerializeField] private GameManager gameManager;
         [SerializeField] private Ball ballPrefab;
@@ -24,6 +29,7 @@ namespace Final_Assignment {
 
         private void Start() {
             SpawnRack();
+            _currentIndex = ballCount - 1;
             ActivateNextBall();
         }
 
@@ -47,6 +53,7 @@ namespace Final_Assignment {
 
         public void ConsumeBallGoal() {
             _goals++;
+            OnGoal?.Invoke(_goals);
             ConsumeAndAdvance();
         }
 
@@ -58,6 +65,7 @@ namespace Final_Assignment {
             if (CurrentBall) {
                 CurrentBall.SetActiveBall(false);
                 CurrentBall = null;
+                OnBallUsed?.Invoke(_currentIndex + 1);
             }
 
             ActivateNextBall();
@@ -65,13 +73,13 @@ namespace Final_Assignment {
 
         private void ActivateNextBall() {
             // No attempts left
-            if (_currentIndex >= _balls.Count) {
+            if (_currentIndex < 0) {
                 gameManager.NoBallsLeft();
                 return;
             }
             
             // Get the next ball and activate it
-            CurrentBall = _balls[_currentIndex++];
+            CurrentBall = _balls[_currentIndex--];
             CurrentBall.SetActiveBall(true);
             
             ResetCurrentBallToSpawn();

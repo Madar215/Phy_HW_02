@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Final_Assignment {
@@ -11,11 +12,15 @@ namespace Final_Assignment {
         private bool _isGameOver;
         private float _elapsed;
 
+        private void Start() {
+            _elapsed = matchSeconds;
+        }
+
         private void Update() {
             if (_isGameOver) return;
             
-            _elapsed += Time.deltaTime;
-            if (_elapsed >= matchSeconds) {
+            _elapsed -= Time.deltaTime;
+            if (_elapsed <= 0f) {
                 // TODO: Implement game over
                 _isGameOver = true;
                 OnGameOver?.Invoke();

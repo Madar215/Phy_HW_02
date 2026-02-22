@@ -17,42 +17,47 @@ namespace Final_Assignment {
         private bool _initialized;
         private float _prevSignedDist;
 
+        private Ball _ball;
+
+        private Ball _prevBall;
+
         private void FixedUpdate() {
-            var ball = rack ? rack.CurrentBall : null;
-            if (!ball || !ball.IsActive || !goalPlane) return;
+            if (!rack) return;
 
-            Vector3 p = ball.Position;
+            _ball = rack.CurrentBall;
+            if (!_ball || !_ball.IsActive) return;
 
-            // Signed distance to plane
-            Vector3 n = goalPlane.forward.normalized;
-            float d = Vector3.Dot(p - goalPlane.position, n);
+            if (_ball != _prevBall) {
+                _prevBall = _ball;
+                _initialized = false;
+            }
+
+            Vector3 n = -goalPlane.forward;
+            float signedDist = Vector3.Dot(_ball.Position - goalPlane.position, n);
 
             if (!_initialized) {
                 _initialized = true;
-                _prevSignedDist = d;
+                _prevSignedDist = signedDist;
                 return;
             }
 
-            // We count a goal when the ball fully crosses from front->back:
-            // i.e. distance goes from > radius to < -radius
-            float r = ball.radius;
-            bool crossed = (_prevSignedDist > r) && (d < -r);
-
-            if (crossed) {
-                // Check within goalmouth rectangle (in goalPlane local space)
-                Vector3 local = goalPlane.InverseTransformPoint(p);
-
-                bool insideWidth = Mathf.Abs(local.x) <= goalWidth * 0.5f;
-                bool insideHeight = (local.y >= 0f) && (local.y <= goalHeight);
-
-                if (insideWidth && insideHeight) {
+            bool crossedPlane = _prevSignedDist > 0f && signedDist < 0f;
+            if (crossedPlane && IsInsideGoalmouth(_ball.Position)) {
+                if (!_ball.Consumed) {
+                    _ball.MarkConsumed();
                     rack.ConsumeBallGoal();
                     _initialized = false;
-                    return;
                 }
             }
 
-            _prevSignedDist = d;
+            _prevSignedDist = signedDist;
+        }
+
+        private bool IsInsideGoalmouth(Vector3 worldPos) {
+            Vector3 local = goalPlane.InverseTransformPoint(worldPos);
+            return Mathf.Abs(local.x) <= goalWidth * 0.5f
+                   && local.y >= 0f
+                   && local.y <= goalHeight;
         }
 
         private void OnDrawGizmosSelected() {

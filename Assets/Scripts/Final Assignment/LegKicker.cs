@@ -61,7 +61,7 @@ namespace Final_Assignment {
 
         private bool BallOverlapsLegBox() {
             Ball ball = rack ? rack.CurrentBall : null;
-            if (!ball || ball.IsActive) return false;
+            if (!ball || !ball.IsActive) return false;
             
             // Convert ball center into leg local space
             Vector3 ballLocal = transform.InverseTransformPoint(ball.Position);

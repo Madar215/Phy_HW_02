@@ -24,6 +24,10 @@ namespace Final_Assignment {
         public Vector3 Position => _pos;
         
         public bool IsActive { get; private set; }
+        
+        public bool Consumed { get; private set; }
+        public void MarkConsumed() => Consumed = true;
+        public void ClearConsumed() => Consumed = false;
 
         private void Awake() {
             _pos = transform.position;
