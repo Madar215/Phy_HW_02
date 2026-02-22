@@ -9,6 +9,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
     public event UnityAction<InputAction.CallbackContext> Steer = delegate { };
     public event UnityAction KickPass = delegate { };
     public event UnityAction KickLob = delegate { };
+    public event UnityAction GrabRope = delegate { };
     
     // Player events
     public event UnityAction<InputAction.CallbackContext> Move = delegate { };
@@ -50,5 +51,10 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
     public void OnKickLob(InputAction.CallbackContext c) {
         if (!c.started) return;
         KickLob?.Invoke();
+    }
+
+    public void OnGrabRope(InputAction.CallbackContext context) {
+        if (!context.started) return;
+        GrabRope?.Invoke();
     }
 }

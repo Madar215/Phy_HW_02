@@ -640,6 +640,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GrabRope",
+                    "type": "Button",
+                    "id": "b94eef7f-5e43-41c3-a7dc-41a0e2f0092b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -794,6 +803,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "KickLob",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b4e137a3-c10a-4f16-b5e6-59caa2e8ad2a",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrabRope",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

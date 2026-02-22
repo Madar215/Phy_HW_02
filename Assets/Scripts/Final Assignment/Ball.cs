@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Final_Assignment {
-    public class ManualBall : MonoBehaviour {
+    public class Ball : MonoBehaviour {
         [Header("Ball Settings")]
         public float radius = 0.11f;
         public float mass = 0.43f;
@@ -22,14 +22,28 @@ namespace Final_Assignment {
         
         private Vector3 _pos;
         public Vector3 Position => _pos;
+        
+        public bool IsActive { get; private set; }
 
         private void Awake() {
             _pos = transform.position;
         }
 
-        private void LateUpdate() {
-            Simulate(Time.deltaTime);
+        void LateUpdate() {
+            if (!IsActive) return;
+
+            float dt = Time.deltaTime;
+            Simulate(dt);
             transform.position = _pos;
+        }
+        
+        public void SetActiveBall(bool value) {
+            IsActive = value;
+
+            if (!value) {
+                velocity = Vector3.zero;
+                angularVelocity = Vector3.zero;
+            }
         }
 
         public void AddImpulse(Vector3 impulse) {

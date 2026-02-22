@@ -3,7 +3,7 @@
 namespace Final_Assignment {
     public class TrajectoryDebugger : MonoBehaviour {
         [Header("Refs (optional)")]
-        [SerializeField] private ManualBall ball; // optional convenience reference
+        [SerializeField] private Ball ball; // optional convenience reference
 
         [Header("Prediction Settings")]
         [SerializeField] private float predictSeconds = 2.0f;

@@ -14,9 +14,10 @@ namespace Final_Assignment {
 
         private Vector3 _velocity;
         private Vector2 _moveInput;
+        private Vector3 _externalVelocity;
         
         public Vector3 Velocity => _velocity;
-
+        
         private void OnEnable() {
             input.Move += OnMove;
         }
@@ -29,7 +30,7 @@ namespace Final_Assignment {
             _moveInput = ctx.ReadValue<Vector2>();
         }
 
-        private void Update() {
+        private void FixedUpdate() {
             float dt = Time.deltaTime;
 
             Vector3 desiredDirection = new Vector3(_moveInput.x, 0f, _moveInput.y);
@@ -54,6 +55,8 @@ namespace Final_Assignment {
                 _velocity = _velocity.normalized * maxSpeed;
 
             // Apply movement
+            _velocity += _externalVelocity;
+            _externalVelocity = Vector3.zero;
             transform.position += _velocity * dt;
 
             // Rotate toward movement
@@ -65,6 +68,10 @@ namespace Final_Assignment {
                     turnSpeed * dt
                 );
             }
+        }
+        
+        public void AddExternalVelocity(Vector3 v) {
+            _externalVelocity += v;
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace Final_Assignment {
     public class PlayerBallInteractor : MonoBehaviour {
         [Header("Refs")]
-        [SerializeField] private ManualBall ball;
+        [SerializeField] private BallRackManager rack;
         [SerializeField] private PlayerController player;
 
         [Header("Player Body Collider (manual)")]
@@ -12,19 +12,24 @@ namespace Final_Assignment {
         [Header("Body Push Tuning")]
         [SerializeField] private float pushStrength = 6f;      // keep small (non-exploit)
         [SerializeField] private float maxPushSpeed = 3f;      // cap body pushing effect
+        
+        private Ball _ball;
 
         private void Update() {
-            if (!ball) return;
+            _ball = rack ? rack.CurrentBall : null;
+            if (!_ball || !_ball.IsActive) return;
 
             ResolveBodyPush();
         }
 
         private void ResolveBodyPush() {
+            if(!_ball || !_ball.IsActive) return;
+            
             // 2D (XZ) circle collision
             Vector2 p = new Vector2(transform.position.x, transform.position.z);
-            Vector2 b = new Vector2(ball.Position.x, ball.Position.z);
+            Vector2 b = new Vector2(_ball.Position.x, _ball.Position.z);
 
-            float r = playerRadius + ball.radius;
+            float r = playerRadius + _ball.radius;
             Vector2 delta = b - p;
             float dist = delta.magnitude;
 
@@ -35,11 +40,11 @@ namespace Final_Assignment {
             float penetration = r - dist;
 
             // Positional correction: move ball out (NOT player)
-            Vector3 ballPos = ball.Position;
+            Vector3 ballPos = _ball.Position;
             ballPos.x += n.x * penetration;
             ballPos.z += n.y * penetration;
             
-            ball.CorrectPosition(ballPos);
+            _ball.CorrectPosition(ballPos);
             
             Vector3 v = player.Velocity;
             Vector2 v2 = new Vector2(v.x, v.z);
@@ -47,10 +52,9 @@ namespace Final_Assignment {
             float alongNormal = Vector2.Dot(v2, n);
             if (alongNormal > 0f){ // only push if moving into the ball
                 float pushV = Mathf.Min(alongNormal * pushStrength, maxPushSpeed);
-                Vector3 impulse = new Vector3(n.x, 0f, n.y) * (pushV * ball.mass);
-                ball.AddImpulse(impulse);
+                Vector3 impulse = new Vector3(n.x, 0f, n.y) * (pushV * _ball.mass);
+                _ball.AddImpulse(impulse);
             }
-
         }
     }
 }

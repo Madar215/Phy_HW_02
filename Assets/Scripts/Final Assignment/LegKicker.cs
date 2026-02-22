@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 namespace Final_Assignment {
-    public class ManualLegKicker : MonoBehaviour {
+    public class LegKicker : MonoBehaviour {
         public enum KickMode { GroundPass, Lob }
 
         [Header("Refs")]
         [SerializeField] private InputReader input;
-        [SerializeField] private ManualBall ball;
+        [SerializeField] private BallRackManager rack;
         [SerializeField] private PlayerController player;
         [SerializeField] private TrajectoryDebugger trajectory;
 
@@ -50,7 +50,8 @@ namespace Final_Assignment {
         }
         
         public void TriggerKick(KickMode mode) {
-            if (_cd > 0f || !ball) return;
+            Ball ball = rack ? rack.CurrentBall : null;
+            if (_cd > 0f || !ball || !ball.IsActive) return;
 
             if (BallOverlapsLegBox()) {
                 ApplyKick(mode);
@@ -59,6 +60,9 @@ namespace Final_Assignment {
         }
 
         private bool BallOverlapsLegBox() {
+            Ball ball = rack ? rack.CurrentBall : null;
+            if (!ball || ball.IsActive) return false;
+            
             // Convert ball center into leg local space
             Vector3 ballLocal = transform.InverseTransformPoint(ball.Position);
             Vector3 d = ballLocal - localCenter;
@@ -78,11 +82,14 @@ namespace Final_Assignment {
         }
 
         private void ApplyKick(KickMode mode) {
+            Ball ball = rack ? rack.CurrentBall : null;
+            if (!ball || !ball.IsActive) return;
+            
             // forward direction (player facing)
             Vector3 fwd = transform.forward;
 
             // where did we hit? (roughly) - use ball relative position to center
-            Vector3 toBall = (ball.Position - transform.position);
+            Vector3 toBall = ball.Position - transform.position;
             toBall.y = 0f;
             Vector3 side = Vector3.Cross(Vector3.up, fwd).normalized;
 
@@ -95,8 +102,7 @@ namespace Final_Assignment {
 
             Vector3 impulseDir = fwd;
 
-            if (mode == KickMode.Lob)
-            {
+            if (mode == KickMode.Lob) {
                 impulseDir = (fwd + Vector3.up * lobUpFactor).normalized;
             }
 
@@ -113,6 +119,9 @@ namespace Final_Assignment {
         }
         
         private void ApplySpinFromContact(KickMode mode, float sideFactor) {
+            Ball ball = rack ? rack.CurrentBall : null;
+            if (!ball || !ball.IsActive) return;
+            
             // Player basis
             Vector3 right = transform.right;
             Vector3 up = Vector3.up;
