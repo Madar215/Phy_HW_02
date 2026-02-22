@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2ad2c5269e344ffbd48cdf374ce7a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Final_Assignment.ManualBall
+  ballRenderer: {fileID: 9200314557480988793}
   radius: 0.5
   mass: 0.43
   restitution: 0.45
@@ -178,3 +179,5 @@ MonoBehaviour:
   magnusStrength: 0.08
   spinDrag: 1.2
   maxSpin: 80
+  activeColor: {r: 0, g: 1, b: 0, a: 1}
+  inactiveColor: {r: 1, g: 0, b: 0, a: 1}

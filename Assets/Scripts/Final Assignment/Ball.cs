@@ -2,6 +2,11 @@
 
 namespace Final_Assignment {
     public class Ball : MonoBehaviour {
+        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+
+        [Header("Refs")] 
+        [SerializeField] private Renderer ballRenderer;
+        
         [Header("Ball Settings")]
         public float radius = 0.11f;
         public float mass = 0.43f;
@@ -14,11 +19,15 @@ namespace Final_Assignment {
         public Vector3 velocity;
         public bool grounded;
         
-        [Header("Spin (Required)")]
+        [Header("Spin")]
         public Vector3 angularVelocity;
         public float magnusStrength = 0.08f;
         public float spinDrag = 1.2f;
         public float maxSpin = 80f;
+        
+        [Header("Colors")]
+        [SerializeField] private Color activeColor = Color.green;
+        [SerializeField] private Color inactiveColor = Color.red;
         
         private Vector3 _pos;
         public Vector3 Position => _pos;
@@ -28,9 +37,12 @@ namespace Final_Assignment {
         public bool Consumed { get; private set; }
         public void MarkConsumed() => Consumed = true;
         public void ClearConsumed() => Consumed = false;
+        
+        private MaterialPropertyBlock _mpb;
 
         private void Awake() {
             _pos = transform.position;
+            _mpb = new MaterialPropertyBlock();
         }
 
         void LateUpdate() {
@@ -47,7 +59,17 @@ namespace Final_Assignment {
             if (!value) {
                 velocity = Vector3.zero;
                 angularVelocity = Vector3.zero;
+                SetColor(inactiveColor);
             }
+            else {
+                SetColor(activeColor);
+            }
+        }
+
+        private void SetColor(Color color) {
+            ballRenderer.GetPropertyBlock(_mpb);
+            _mpb.SetColor(BaseColor, color);
+            ballRenderer.SetPropertyBlock(_mpb);
         }
 
         public void AddImpulse(Vector3 impulse) {
