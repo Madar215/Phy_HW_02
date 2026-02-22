@@ -22,6 +22,10 @@ namespace Final_Assignment {
             rack.OnBallUsed -= SetBallsRemaining;
         }
 
+        private void Update() {
+            timeText.text = Mathf.RoundToInt(gameManager.Elapsed).ToString();
+        }
+
         private void SetTimeText(float time) {
             timeText.text = Mathf.RoundToInt(time).ToString("F2");
         }

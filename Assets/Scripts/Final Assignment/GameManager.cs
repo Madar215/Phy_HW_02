@@ -9,17 +9,17 @@ namespace Final_Assignment {
         [SerializeField] private float matchSeconds = 120f;
         
         private bool _isGameOver;
-        private float _elapsed;
+        public float Elapsed { get; private set; }
 
         private void Start() {
-            _elapsed = matchSeconds;
+            Elapsed = matchSeconds;
         }
 
         private void Update() {
             if (_isGameOver) return;
             
-            _elapsed -= Time.deltaTime;
-            if (_elapsed <= 0f) {
+            Elapsed -= Time.deltaTime;
+            if (Elapsed <= 0f) {
                 // TODO: Implement game over
                 _isGameOver = true;
                 OnGameOver?.Invoke();
