@@ -5,7 +5,6 @@ namespace Final_Assignment {
         [Header("Refs")]
         [SerializeField] private BallRackManager rack;
         [SerializeField] private StaticOpponent[] opponents;
-        [SerializeField] private PlayerFakeBody playerBody;
         [SerializeField] private PlayerController playerController;
         
         [Header("Settings")]
@@ -26,7 +25,7 @@ namespace Final_Assignment {
 
             if (_tackleCd > 0f) return;
 
-            Vector3 p = playerBody.PelvisPosition;
+            Vector3 p = playerController.PelvisPosition;
             foreach (var opponent in opponents) {
                 if (opponent.ShouldTackle(p, out _)) {
                     playerController.TriggerTackle(opponent.transform.position);

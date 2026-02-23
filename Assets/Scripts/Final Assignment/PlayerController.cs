@@ -21,14 +21,14 @@ namespace Final_Assignment {
         [SerializeField] private Transform headJoint;
         [SerializeField] private Transform leftLegJoint;
         [SerializeField] private Transform rightLegJoint;
-
         [SerializeField] private float torsoLength = 0.8f;
         [SerializeField] private float headLength = 0.4f;
         [SerializeField] private float legLength = 1.0f;
-
-        [SerializeField] private float gravity = 22f;
         [SerializeField] private int constraintIterations = 6;
         
+        [Header("Ground Settings")]
+        [SerializeField] private float standingHeightAboveGround = 1f;
+        [SerializeField] private float gravity = 22f;
         [SerializeField] private float groundY;
         
         // Velocity
@@ -46,9 +46,10 @@ namespace Final_Assignment {
         
         // Cached variables
         private float _dt;
-
-        public bool IsTackled => _isTackled;
+        
+        // Properties
         public Vector3 Velocity => _velocity;
+        public Vector3 PelvisPosition => _pelvis;
         
         private void OnEnable() {
             input.Move += OnMove;
@@ -58,12 +59,29 @@ namespace Final_Assignment {
             input.Move -= OnMove;
         }
 
-        private void OnMove(InputAction.CallbackContext ctx) {
-            _moveInput = ctx.ReadValue<Vector2>();
+        private void Update() {
+            if (!_isTackled) return;
+
+            _tackleTimer -= Time.deltaTime;
+            if (_tackleTimer <= 0f)
+            {
+                _isTackled = false;
+                
+                ResetJoints();
+
+                ResetPrev();
+                ApplyToTransforms();
+
+                // Also good: clear motion so you don't “slide” from old velocity
+                _velocity = Vector3.zero;
+            }
         }
 
         private void FixedUpdate() {
+            _dt = Time.fixedDeltaTime;
+
             if (!_isTackled) {
+                // standing pose
                 _pelvis = transform.position;
                 _torso = _pelvis + Vector3.up * torsoLength;
                 _head = _torso + Vector3.up * headLength;
@@ -71,11 +89,42 @@ namespace Final_Assignment {
                 _rightLeg = _pelvis + Vector3.right * 0.2f - Vector3.up * legLength;
 
                 ResetPrev();
-
                 ApplyToTransforms();
+
+                ApplyMovement();
                 return;
             }
-            
+
+            SimulateTackle();
+        }
+
+        public void TriggerTackle(Vector3 attackerPos) {
+            if (_isTackled) return;
+
+            _isTackled = true;
+            _tackleTimer = tackleDuration;
+
+            _velocity = Vector3.zero;
+
+            _prevPelvis = _pelvis;
+            _prevTorso = _torso;
+            _prevHead = _head;
+            _prevLeftLeg = _leftLeg;
+            _prevRightLeg = _rightLeg;
+
+            Vector3 shove = (_pelvis - attackerPos).normalized;
+            _prevPelvis -= shove * 0.4f;
+        }
+        
+        public void AddExternalVelocity(Vector3 v) {
+            _externalVelocity += v;
+        }
+        
+        private void OnMove(InputAction.CallbackContext ctx) {
+            _moveInput = ctx.ReadValue<Vector2>();
+        }
+        
+        private void SimulateTackle() {
             _dt = Time.fixedDeltaTime;
 
             SimulatePoint(ref _pelvis, ref _prevPelvis, _dt);
@@ -98,7 +147,23 @@ namespace Final_Assignment {
             ApplyGround(ref _rightLeg, ref _prevRightLeg);
 
             ApplyToTransforms();
+        }
+        
+        private void ResetJoints() {
+            Vector3 p = _pelvis;
 
+            // Keep player on the ground/standing height
+            p.y = groundY + standingHeightAboveGround;
+            transform.position = p;
+                
+            _pelvis = transform.position;
+            _torso = _pelvis + Vector3.up * torsoLength;
+            _head = _torso + Vector3.up * headLength;
+            _leftLeg = _pelvis + Vector3.left * 0.2f - Vector3.up * legLength;
+            _rightLeg = _pelvis + Vector3.right * 0.2f - Vector3.up * legLength;
+        }
+
+        private void ApplyMovement() {
             Vector3 desiredDirection = new Vector3(_moveInput.x, 0f, _moveInput.y);
         
             if (desiredDirection.magnitude > 1f)
@@ -135,29 +200,7 @@ namespace Final_Assignment {
                 );
             }
         }
-        
-        public void TriggerTackle(Vector3 attackerPos) {
-            if (_isTackled) return;
 
-            _isTackled = true;
-            _tackleTimer = tackleDuration;
-
-            _velocity = Vector3.zero;
-
-            _prevPelvis = _pelvis;
-            _prevTorso = _torso;
-            _prevHead = _head;
-            _prevLeftLeg = _leftLeg;
-            _prevRightLeg = _rightLeg;
-
-            Vector3 shove = (_pelvis - attackerPos).normalized;
-            _prevPelvis -= shove * 0.4f;
-        }
-        
-        public void AddExternalVelocity(Vector3 v) {
-            _externalVelocity += v;
-        }
-        
         private void SimulatePoint(ref Vector3 pos, ref Vector3 prev, float dt) {
             Vector3 vel = pos - prev;
             prev = pos;
@@ -165,7 +208,7 @@ namespace Final_Assignment {
             pos += Vector3.down * (gravity * dt * dt);
         }
         
-        private void SolveDistance(ref Vector3 a, ref Vector3 b, float length) {
+        private static void SolveDistance(ref Vector3 a, ref Vector3 b, float length) {
             Vector3 delta = b - a;
             float dist = delta.magnitude;
             if (dist < 0.0001f) return;
