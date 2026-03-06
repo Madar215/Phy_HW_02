@@ -2,51 +2,26 @@
 
 namespace Final_Assignment {
     public class TrajectoryDebugger : MonoBehaviour {
-        [Header("Refs (optional)")]
-        [SerializeField] private Ball ball; // optional convenience reference
-
         [Header("Prediction Settings")]
         [SerializeField] private float predictSeconds = 2.0f;
-        [SerializeField] private float step = 0.02f; // smaller = smoother, more lines
+        [SerializeField] private float step = 0.02f;
 
         [Header("Ground Settings")]
-        [SerializeField] private float groundY = 0f;
+        [SerializeField] private float groundY;
 
-        [Header("Draw Settings")]
-        [SerializeField] private bool drawAlways = false;  // if true: draws every frame from ball state
-        [SerializeField] private float drawDuration = 0f;  // Debug.DrawLine duration; 0 = one frame
-
-        private bool _requestedOnce;
-
-        /// <summary>
-        /// Call this right after a kick to draw the next 1-2 seconds.
-        /// </summary>
-        public void RequestDrawOnce() {
-            _requestedOnce = true;
-        }
-
-        /// <summary>
-        /// Draw from explicit parameters (recommended to call right after kick).
-        /// </summary>
-        public void DrawFrom(Vector3 startPos, Vector3 startVel, Vector3 startAngularVel,
+        [Header("Draw Settings")] 
+        [SerializeField] private float drawDuration;
+        [SerializeField] private Color drawColor = Color.yellow;
+        
+        public void DrawFrom(Ball ball, Vector3 startPos, Vector3 startVel, Vector3 startAngularVel,
             float? seconds = null, float? stepOverride = null) {
             float T = seconds ?? predictSeconds;
             float dt = stepOverride ?? step;
 
-            SimAndDraw(startPos, startVel, startAngularVel, T, dt);
+            SimAndDraw(ball, startPos, startVel, startAngularVel, T, dt);
         }
 
-        private void Update() {
-            if (drawAlways && ball) {
-                DrawFrom(ball.Position, ball.velocity, ball.angularVelocity);
-            }
-            else if (_requestedOnce && ball) {
-                _requestedOnce = false;
-                DrawFrom(ball.Position, ball.velocity, ball.angularVelocity);
-            }
-        }
-
-        private void SimAndDraw(Vector3 startPos, Vector3 startVel, Vector3 startW, float seconds, float dt) {
+        private void SimAndDraw(Ball ball, Vector3 startPos, Vector3 startVel, Vector3 startW, float seconds, float dt) {
             // copy state so prediction doesn't affect real game state
             Vector3 pos = startPos;
             Vector3 vel = startVel;
@@ -108,7 +83,7 @@ namespace Final_Assignment {
                 w *= Mathf.Clamp01(1f - spinDrag * dt);
 
                 // draw segment
-                Debug.DrawLine(prev, pos, Color.white, drawDuration);
+                Debug.DrawLine(prev, pos, drawColor, drawDuration);
                 prev = pos;
             }
         }

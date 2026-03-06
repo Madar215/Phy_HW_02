@@ -70,7 +70,7 @@ namespace Final_Assignment {
             if (pullVel.magnitude > maxPullSpeed)
                 pullVel = pullVel.normalized * maxPullSpeed;
 
-            if (playerController != null) playerController.AddExternalVelocity(pullVel);
+            if (playerController) playerController.AddExternalVelocity(pullVel);
             else transform.position += pullVel * Time.deltaTime;
         }
     }

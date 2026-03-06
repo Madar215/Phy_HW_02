@@ -2089,6 +2089,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1260102005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260102007}
+  - component: {fileID: 1260102006}
+  m_Layer: 0
+  m_Name: Trajectory Debugger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1260102006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260102005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b65fae4e8ed43c79500c8b8fac1d4e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Final_Assignment.TrajectoryDebugger
+  predictSeconds: 2
+  step: 0.02
+  groundY: 0
+  drawDuration: 2
+  drawColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+--- !u!4 &1260102007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260102005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312108930
 GameObject:
   m_ObjectHideFlags: 0
@@ -2201,56 +2250,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312108930}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1320103790
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1320103792}
-  - component: {fileID: 1320103791}
-  m_Layer: 0
-  m_Name: Trjectory Debugger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1320103791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1320103790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b65fae4e8ed43c79500c8b8fac1d4e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Final_Assignment.TrajectoryDebugger
-  ball: {fileID: 0}
-  predictSeconds: 2
-  step: 0.02
-  groundY: 0
-  drawAlways: 0
-  drawDuration: 0
---- !u!4 &1320103792
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1320103790}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1640759693
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,7 +2476,7 @@ Transform:
   m_GameObject: {fileID: 1660278974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.36, z: 18.061}
+  m_LocalPosition: {x: -0.6, y: 3.36, z: 18.061}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3903,7 +3902,7 @@ PrefabInstance:
     - target: {fileID: 6417903630724299171, guid: 83826af5a849d7647aa7d8cda1e512b7, type: 3}
       propertyPath: trajectory
       value: 
-      objectReference: {fileID: 1320103791}
+      objectReference: {fileID: 1260102006}
     - target: {fileID: 6427995362532909009, guid: 83826af5a849d7647aa7d8cda1e512b7, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.537
@@ -3944,8 +3943,8 @@ SceneRoots:
   - {fileID: 1233341525}
   - {fileID: 1010105626}
   - {fileID: 1084560374}
-  - {fileID: 1320103792}
   - {fileID: 1873502930}
+  - {fileID: 1260102007}
   - {fileID: 1902764713}
   - {fileID: 1764730432}
   - {fileID: 17538608009300265}

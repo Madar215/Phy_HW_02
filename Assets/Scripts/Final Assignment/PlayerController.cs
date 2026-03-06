@@ -90,8 +90,7 @@ namespace Final_Assignment {
 
                 ResetPrev();
                 ApplyToTransforms();
-
-                // Also good: clear motion so you don't “slide” from old velocity
+                
                 _velocity = Vector3.zero;
             }
         }

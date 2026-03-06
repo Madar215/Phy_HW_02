@@ -5,12 +5,9 @@ namespace Final_Assignment {
         [Header("Refs")]
         [SerializeField] private BallRackManager rack;
 
-        [Header("Goal Plane (manual)")]
-        [Tooltip("A transform whose forward defines the goal plane normal.")]
+        [Header("Goal Plane")]
         [SerializeField] private Transform goalPlane;
-        [Tooltip("Width of the goal mouth in world units.")]
         [SerializeField] private float goalWidth = 3f;
-        [Tooltip("Height under crossbar in world units.")]
         [SerializeField] private float goalHeight = 2f;
 
         // Track last frame side

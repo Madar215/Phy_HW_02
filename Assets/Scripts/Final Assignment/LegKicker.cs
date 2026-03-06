@@ -10,20 +10,20 @@ namespace Final_Assignment {
         [SerializeField] private PlayerController player;
         [SerializeField] private TrajectoryDebugger trajectory;
 
-        [Header("Leg Collider (manual box in local space)")]
+        [Header("Leg Collider")]
         [SerializeField] private Vector3 localCenter = new(0f, 0.5f, 0.7f);
         [SerializeField] private Vector3 halfExtents = new(0.25f, 0.35f, 0.25f);
 
         [Header("Kick Tuning")]
-        [SerializeField] private float passImpulse = 3.5f;  // tune
-        [SerializeField] private float lobImpulse = 4.0f;   // tune
-        [SerializeField] private float lobUpFactor = 0.9f;  // adds upward component
+        [SerializeField] private float passImpulse = 3.5f;
+        [SerializeField] private float lobImpulse = 4.0f;
+        [SerializeField] private float lobUpFactor = 0.9f;
         [SerializeField] private float kickCooldown = 0.25f;
         
         [Header("Spin From Kicks")]
-        [SerializeField] private float sideSpinAmount = 35f;   // rad/s (curl/banana)
-        [SerializeField] private float topSpinAmount = 25f;    // rad/s (dipping)
-        [SerializeField] private float backSpinAmount = 28f;   // rad/s (chip/loft)
+        [SerializeField] private float sideSpinAmount = 35f;
+        [SerializeField] private float topSpinAmount = 25f;
+        [SerializeField] private float backSpinAmount = 28f;
 
         private float _cd;
 
@@ -85,10 +85,9 @@ namespace Final_Assignment {
             Ball ball = rack ? rack.CurrentBall : null;
             if (!ball || !ball.IsActive) return;
             
-            // forward direction (player facing)
             Vector3 fwd = transform.forward;
 
-            // where did we hit? (roughly) - use ball relative position to center
+            // Where did we hit
             Vector3 toBall = ball.Position - transform.position;
             toBall.y = 0f;
             Vector3 side = Vector3.Cross(Vector3.up, fwd).normalized;
@@ -106,7 +105,7 @@ namespace Final_Assignment {
                 impulseDir = (fwd + Vector3.up * lobUpFactor).normalized;
             }
 
-            // Small side variation based on contact point (later this can become SPIN)
+            // Small side variation based on contact point
             impulseDir = (impulseDir + side * (0.15f * sideFactor)).normalized;
 
             Vector3 impulse = impulseDir * (baseImpulse * timingBoost * ball.mass);
@@ -115,7 +114,7 @@ namespace Final_Assignment {
             
             ApplySpinFromContact(mode, sideFactor);
             
-            trajectory.DrawFrom(ball.Position, ball.velocity, ball.angularVelocity, seconds: 2f, stepOverride: 0.02f);
+            trajectory.DrawFrom(ball, ball.Position, ball.velocity, ball.angularVelocity, seconds: 2f, stepOverride: 0.02f);
         }
         
         private void ApplySpinFromContact(KickMode mode, float sideFactor) {
@@ -139,10 +138,10 @@ namespace Final_Assignment {
             else
                 tb = -backSpinAmount;    // lob/chip with backspin
 
-            // Side spin stronger for "outside-foot" (big |sideFactor|)
+            // Side spin stronger for "outside-foot"
             float sideSpin = sideSpinAmount * Mathf.Clamp(sideFactor, -1f, 1f);
 
-            // Slightly boost spin when ball is airborne (rewards timing)
+            // Slightly boost spin when ball is airborne
             float timingBoost = ball.grounded ? 1f : 1.2f;
 
             Vector3 w =

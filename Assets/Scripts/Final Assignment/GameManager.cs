@@ -20,7 +20,6 @@ namespace Final_Assignment {
             
             Elapsed -= Time.deltaTime;
             if (Elapsed <= 0f) {
-                // TODO: Implement game over
                 _isGameOver = true;
                 OnGameOver?.Invoke();
             }

@@ -6,12 +6,12 @@ namespace Final_Assignment {
         [SerializeField] private BallRackManager rack;
         [SerializeField] private PlayerController player;
 
-        [Header("Player Body Collider (manual)")]
+        [Header("Player Body Collider")]
         [SerializeField] private float playerRadius = 0.35f;
 
-        [Header("Body Push Tuning")]
-        [SerializeField] private float pushStrength = 6f;      // keep small (non-exploit)
-        [SerializeField] private float maxPushSpeed = 3f;      // cap body pushing effect
+        [Header("Body Push Tuning")] 
+        [SerializeField] private float pushStrength = 6f;
+        [SerializeField] private float maxPushSpeed = 3f;
         
         private Ball _ball;
 
@@ -25,7 +25,7 @@ namespace Final_Assignment {
         private void ResolveBodyPush() {
             if(!_ball || !_ball.IsActive) return;
             
-            // 2D (XZ) circle collision
+            // 2D circle collision
             Vector2 p = new Vector2(transform.position.x, transform.position.z);
             Vector2 b = new Vector2(_ball.Position.x, _ball.Position.z);
 
@@ -39,7 +39,7 @@ namespace Final_Assignment {
             Vector2 n = delta / dist;
             float penetration = r - dist;
 
-            // Positional correction: move ball out (NOT player)
+            // Positional correction: move ball out
             Vector3 ballPos = _ball.Position;
             ballPos.x += n.x * penetration;
             ballPos.z += n.y * penetration;
