@@ -15,7 +15,7 @@ namespace Final_Assignment {
         [Header("Tackle")]
         [SerializeField] private float tackleDuration = 1.2f;
         
-        [Header("Fake Joints")]
+        [Header("Joints")]
         [SerializeField] private Transform pelvisJoint;
         [SerializeField] private Transform torsoJoint;
         [SerializeField] private Transform headJoint;
@@ -24,16 +24,24 @@ namespace Final_Assignment {
         [SerializeField] private float torsoLength = 0.8f;
         [SerializeField] private float headLength = 0.4f;
         [SerializeField] private float legLength = 1.0f;
+        [SerializeField] private float legsDistant = 0.4f;
         [SerializeField] private int constraintIterations = 6;
         
         [Header("Ground Settings")]
         [SerializeField] private float standingHeightAboveGround = 1f;
         [SerializeField] private float gravity = 22f;
         [SerializeField] private float groundY;
+        [SerializeField] private float jumpSpeed = 8f;
         
-        // Velocity
-        private Vector3 _velocity;
+        // Input
         private Vector2 _moveInput;
+        private bool _jumpPressed;
+        
+        // Ground
+        private bool _isGrounded;
+        
+        // Forces
+        private Vector3 _velocity;
         private Vector3 _externalVelocity;
         
         // Tackle
@@ -50,21 +58,32 @@ namespace Final_Assignment {
         // Properties
         public Vector3 Velocity => _velocity;
         public Vector3 PelvisPosition => _pelvis;
+        public float StandingHeightAboveGround => standingHeightAboveGround;
+        public bool IsGrounded => _isGrounded;
         
         private void OnEnable() {
             input.Move += OnMove;
+            input.Jump += OnJump;
         }
 
         private void OnDisable() {
             input.Move -= OnMove;
+            input.Jump -= OnJump;
+        }
+        
+        private void OnMove(InputAction.CallbackContext ctx) {
+            _moveInput = ctx.ReadValue<Vector2>();
+        }
+
+        private void OnJump(InputAction.CallbackContext ctx) {
+            if(ctx.started) _jumpPressed = true;
         }
 
         private void Update() {
             if (!_isTackled) return;
 
             _tackleTimer -= Time.deltaTime;
-            if (_tackleTimer <= 0f)
-            {
+            if (_tackleTimer <= 0f) {
                 _isTackled = false;
                 
                 ResetJoints();
@@ -81,17 +100,16 @@ namespace Final_Assignment {
             _dt = Time.fixedDeltaTime;
 
             if (!_isTackled) {
-                // standing pose
+                ApplyMovement();
+
                 _pelvis = transform.position;
                 _torso = _pelvis + Vector3.up * torsoLength;
                 _head = _torso + Vector3.up * headLength;
-                _leftLeg = _pelvis + Vector3.left * 0.2f - Vector3.up * legLength;
-                _rightLeg = _pelvis + Vector3.right * 0.2f - Vector3.up * legLength;
+                _leftLeg = _pelvis + Vector3.left * legsDistant - Vector3.up * legLength;
+                _rightLeg = _pelvis + Vector3.right * legsDistant - Vector3.up * legLength;
 
                 ResetPrev();
                 ApplyToTransforms();
-
-                ApplyMovement();
                 return;
             }
 
@@ -118,10 +136,6 @@ namespace Final_Assignment {
         
         public void AddExternalVelocity(Vector3 v) {
             _externalVelocity += v;
-        }
-        
-        private void OnMove(InputAction.CallbackContext ctx) {
-            _moveInput = ctx.ReadValue<Vector2>();
         }
         
         private void SimulateTackle() {
@@ -164,35 +178,71 @@ namespace Final_Assignment {
         }
 
         private void ApplyMovement() {
+            // Desired movement
             Vector3 desiredDirection = new Vector3(_moveInput.x, 0f, _moveInput.y);
-        
-            if (desiredDirection.magnitude > 1f)
-                desiredDirection.Normalize();
-
+            desiredDirection.Normalize();
+            
+            // Desired horizontal velocity
+            Vector3 horizontalVelocity = new Vector3(_velocity.x, 0f, _velocity.z);
+            
+            // Accelerate or decelerate the player
             if (desiredDirection.sqrMagnitude > 0.001f) {
-                // Acceleration
-                _velocity += desiredDirection * (acceleration * _dt);
+                horizontalVelocity += desiredDirection * (acceleration * _dt);
             }
             else {
-                // Deceleration
-                float speed = _velocity.magnitude;
+                float speed = horizontalVelocity.magnitude;
                 speed -= deceleration * _dt;
                 speed = Mathf.Max(speed, 0f);
-                _velocity = _velocity.normalized * speed;
+                horizontalVelocity = speed > 0f ? horizontalVelocity.normalized * speed : Vector3.zero;
             }
+            
+            // clamp velocity to a max speed
+            if (horizontalVelocity.magnitude > maxSpeed)
+                horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
+            
+            // Apply it to the velocity
+            _velocity.x = horizontalVelocity.x;
+            _velocity.z = horizontalVelocity.z;
 
-            // Clamp max speed
-            if (_velocity.magnitude > maxSpeed)
-                _velocity = _velocity.normalized * maxSpeed;
-
-            // Apply movement
+            // Apply external forces first (rope or trampoline)
             _velocity += _externalVelocity;
             _externalVelocity = Vector3.zero;
+
+            float groundHeight = groundY + standingHeightAboveGround;
+
+            // Ground check before jump
+            _isGrounded = transform.position.y <= groundHeight + 0.01f;
+
+            // Jump
+            if (_jumpPressed && _isGrounded && !_isTackled) {
+                _velocity.y = jumpSpeed;
+                _isGrounded = false;
+            }
+            _jumpPressed = false;
+
+            // Gravity
+            if (!_isGrounded || _velocity.y > 0f) {
+                _velocity.y -= gravity * _dt;
+            }
+
+            // Apply movement
             transform.position += _velocity * _dt;
 
-            // Rotate toward movement
-            if (_velocity.sqrMagnitude > 0.001f) {
-                Quaternion targetRot = Quaternion.LookRotation(_velocity.normalized);
+            // Ground collision
+            Vector3 pos = transform.position;
+            if (pos.y < groundHeight) {
+                pos.y = groundHeight;
+                transform.position = pos;
+
+                if (_velocity.y < 0f)
+                    _velocity.y = 0f;
+
+                _isGrounded = true;
+            }
+
+            // Rotate from horizontal movement
+            if (horizontalVelocity.sqrMagnitude > 0.001f) {
+                Quaternion targetRot = Quaternion.LookRotation(horizontalVelocity.normalized);
                 transform.rotation = Quaternion.Slerp(
                     transform.rotation,
                     targetRot,

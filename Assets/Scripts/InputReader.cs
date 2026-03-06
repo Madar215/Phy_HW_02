@@ -7,12 +7,13 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
     // Car events
     public event UnityAction<InputAction.CallbackContext> Drive = delegate { };
     public event UnityAction<InputAction.CallbackContext> Steer = delegate { };
-    public event UnityAction KickPass = delegate { };
-    public event UnityAction KickLob = delegate { };
-    public event UnityAction GrabRope = delegate { };
     
     // Player events
     public event UnityAction<InputAction.CallbackContext> Move = delegate { };
+    public event UnityAction<InputAction.CallbackContext> Jump = delegate { }; 
+    public event UnityAction KickPass = delegate { };
+    public event UnityAction KickLob = delegate { };
+    public event UnityAction GrabRope = delegate { };
     
     private PlayerInputActions _inputActions;
     
@@ -41,6 +42,10 @@ public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, Pla
 
     public void OnMove(InputAction.CallbackContext context) {
         Move?.Invoke(context);
+    }
+    
+    public void OnJump(InputAction.CallbackContext context) {
+        Jump?.Invoke(context);
     }
 
     public void OnKickPass(InputAction.CallbackContext c) {
