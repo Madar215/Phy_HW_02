@@ -3,16 +3,24 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
-public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions {
-    // Events
+public class InputReader : ScriptableObject, PlayerInputActions.ICarActions, PlayerInputActions.IPlayerActions {
+    // Car events
     public event UnityAction<InputAction.CallbackContext> Drive = delegate { };
     public event UnityAction<InputAction.CallbackContext> Steer = delegate { };
+    
+    // Player events
+    public event UnityAction<InputAction.CallbackContext> Move = delegate { };
+    public event UnityAction<InputAction.CallbackContext> Jump = delegate { }; 
+    public event UnityAction KickPass = delegate { };
+    public event UnityAction KickLob = delegate { };
+    public event UnityAction GrabRope = delegate { };
     
     private PlayerInputActions _inputActions;
     
     private void OnEnable() {
         if (_inputActions == null) {
             _inputActions = new PlayerInputActions();
+            _inputActions.Car.SetCallbacks(this);
             _inputActions.Player.SetCallbacks(this);
         }
         
@@ -20,6 +28,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions {
     }
 
     private void OnDisable() {
+        _inputActions.Car.Disable();
         _inputActions.Player.Disable();
     }
 
@@ -31,4 +40,26 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions {
         Steer?.Invoke(context);
     }
 
+    public void OnMove(InputAction.CallbackContext context) {
+        Move?.Invoke(context);
+    }
+    
+    public void OnJump(InputAction.CallbackContext context) {
+        Jump?.Invoke(context);
+    }
+
+    public void OnKickPass(InputAction.CallbackContext c) {
+        if (!c.started) return;
+        KickPass?.Invoke();
+    }
+
+    public void OnKickLob(InputAction.CallbackContext c) {
+        if (!c.started) return;
+        KickLob?.Invoke();
+    }
+
+    public void OnGrabRope(InputAction.CallbackContext context) {
+        if (!context.started) return;
+        GrabRope?.Invoke();
+    }
 }
