@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Final_Assignment.VerletRope
   line: {fileID: 3985624}
   anchor: {fileID: 1660278975}
-  segmentCount: 10
+  segmentCount: 17
   segmentLength: 0.35
   gravity: 22
   damping: 0.01
@@ -2476,7 +2476,7 @@ Transform:
   m_GameObject: {fileID: 1660278974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6, y: 3.36, z: 18.061}
+  m_LocalPosition: {x: -0.6, y: 6.74, z: 16.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
