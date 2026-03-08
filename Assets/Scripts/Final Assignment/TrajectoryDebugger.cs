@@ -22,12 +22,12 @@ namespace Final_Assignment {
         }
 
         private void SimAndDraw(Ball ball, Vector3 startPos, Vector3 startVel, Vector3 startW, float seconds, float dt) {
-            // copy state so prediction doesn't affect real game state
+            // Copy state so prediction doesn't affect real game state
             Vector3 pos = startPos;
             Vector3 vel = startVel;
             Vector3 w = startW;
 
-            // pull parameters from ball if available, else use defaults
+            // Pull parameters from ball if available, else use defaults
             float gravity = ball ? ball.gravity : 22f;
             float airDrag = ball ? ball.airDrag : 0.15f;
             float restitution = ball ? ball.restitution : 0.45f;
@@ -42,33 +42,32 @@ namespace Final_Assignment {
 
             // Use a fixed dt simulation for determinism.
             for (int i = 0; i < steps; i++) {
-                // --- forces / accelerations ---
-                // gravity
+                // Gravity
                 vel += Vector3.down * (gravity * dt);
 
-                // magnus (curve): a ∝ ω × v
+                // Magnus curve
                 if (vel.sqrMagnitude > 0.0025f){ // speed > ~0.05
                     Vector3 magnusAccel = Vector3.Cross(w, vel) * magnusStrength;
                     vel += magnusAccel * dt;
                 }
 
-                // air drag
+                // Air drag
                 vel *= Mathf.Clamp01(1f - airDrag * dt);
 
-                // integrate
+                // Integrate
                 pos += vel * dt;
 
-                // ground collision (plane)
+                // Ground collision (plane)
                 float bottom = pos.y - radius;
                 if (bottom < groundY) {
-                    // push out
+                    // Push out
                     pos.y = groundY + radius;
 
-                    // bounce only if falling
+                    // Bounce only if falling
                     if (vel.y < 0f)
                         vel.y = -vel.y * restitution;
 
-                    // ground friction on horizontal
+                    // Ground friction on horizontal
                     Vector3 vXZ = new Vector3(vel.x, 0f, vel.z);
                     float speed = vXZ.magnitude;
                     if (speed > 0.0001f) {
@@ -79,10 +78,10 @@ namespace Final_Assignment {
                     }
                 }
 
-                // spin decay
+                // Spin decay
                 w *= Mathf.Clamp01(1f - spinDrag * dt);
 
-                // draw segment
+                // Draw segment
                 Debug.DrawLine(prev, pos, drawColor, drawDuration);
                 prev = pos;
             }

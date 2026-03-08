@@ -257,14 +257,14 @@ namespace Final_Assignment {
             pos += Vector3.down * (gravity * dt * dt);
         }
         
-        private static void SolveDistance(ref Vector3 a, ref Vector3 b, float length) {
-            Vector3 delta = b - a;
+        private static void SolveDistance(ref Vector3 jointA, ref Vector3 jointB, float length) {
+            Vector3 delta = jointB - jointA;
             float dist = delta.magnitude;
             if (dist < 0.0001f) return;
 
             float diff = (dist - length) / dist;
-            a += delta * (diff * 0.5f);
-            b -= delta * (diff * 0.5f);
+            jointA += delta * (diff * 0.5f);
+            jointB -= delta * (diff * 0.5f);
         }
 
         private void ApplyGround(ref Vector3 pos, ref Vector3 prev) {

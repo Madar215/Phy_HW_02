@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Final_Assignment {
-    public class VerletRope : MonoBehaviour {
+    public class Rope : MonoBehaviour {
         [Header("Refs")]
         [SerializeField] private LineRenderer line;
         
@@ -23,7 +23,6 @@ namespace Final_Assignment {
 
         public int Count => _pos.Length;
         public Vector3 GetPoint(int i) => _pos[i];
-        public void SetPoint(int i, Vector3 p) => _pos[i] = p;
 
         private void Awake() {
             Init();
@@ -73,7 +72,7 @@ namespace Final_Assignment {
                     SolveDistanceConstraint(i, i + 1);
                 }
 
-                // Optional ground collision
+                // Ground collision
                 for (int i = 1; i < _pos.Length; i++) {
                     if (_pos[i].y < groundY)
                         _pos[i].y = groundY;
@@ -93,7 +92,7 @@ namespace Final_Assignment {
             Vector3 correction = delta.normalized * error;
 
             if (i == 0) {
-                // first point fixed (anchor)
+                // First point fixed (anchor)
                 _pos[j] -= correction;
             }
             else {

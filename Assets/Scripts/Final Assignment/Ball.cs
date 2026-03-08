@@ -36,7 +36,6 @@ namespace Final_Assignment {
         
         public bool Consumed { get; private set; }
         public void MarkConsumed() => Consumed = true;
-        public void ClearConsumed() => Consumed = false;
         
         private MaterialPropertyBlock _mpb;
 
@@ -90,10 +89,10 @@ namespace Final_Assignment {
             // Integrate
             _pos += velocity * dt;
 
-            // Ground collision (plane at y=0)
+            // Ground collision
             ResolveGround(0f);
             
-            // spin decay
+            // Spin decay
             angularVelocity *= Mathf.Clamp01(1f - spinDrag * dt);
         }
         
@@ -105,16 +104,16 @@ namespace Final_Assignment {
             float bottom = _pos.y - radius;
 
             if (bottom < groundY) {
-                // push out
+                // Push out
                 _pos.y = groundY + radius;
 
-                // bounce only if moving downward
+                // Bounce only if moving downward
                 if (velocity.y < 0f)
                     velocity.y = -velocity.y * restitution;
 
                 grounded = true;
 
-                // ground friction on horizontal velocity
+                // Ground friction on horizontal velocity
                 Vector3 vXZ = new Vector3(velocity.x, 0f, velocity.z);
                 float speed = vXZ.magnitude;
 
@@ -137,10 +136,7 @@ namespace Final_Assignment {
             float speed = velocity.magnitude;
             if (speed < 0.05f) return;
 
-            // Optional: reduce effect near/along ground (you can keep it always-on if you want)
-            // if (grounded) return;
-
-            // ω × v gives a direction; scale by speed for stronger curve at higher speeds
+            // Gives a direction, scale by speed for stronger curve at higher speeds
             Vector3 magnusAccel = Vector3.Cross(angularVelocity, velocity) * magnusStrength;
 
             // Safety clamp so it doesn't explode

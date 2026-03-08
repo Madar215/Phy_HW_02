@@ -4,7 +4,7 @@ namespace Final_Assignment {
     public class RopeGrabber : MonoBehaviour {
         [Header("Refs")]
         [SerializeField] private InputReader inputReader;
-        [SerializeField] private VerletRope rope;
+        [SerializeField] private Rope rope;
         [SerializeField] private PlayerController playerController;
 
         [Header("Grab Settings")]
