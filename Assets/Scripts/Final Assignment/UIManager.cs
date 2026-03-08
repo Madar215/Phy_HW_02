@@ -26,10 +26,6 @@ namespace Final_Assignment {
             timeText.text = Mathf.RoundToInt(gameManager.Elapsed).ToString();
         }
 
-        private void SetTimeText(float time) {
-            timeText.text = Mathf.RoundToInt(time).ToString("F2");
-        }
-
         private void SetBallsRemaining(int newValue) {
             ballsLeftText.text = newValue.ToString();
         }
